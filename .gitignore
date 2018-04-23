@@ -1,5 +1,5 @@
 output.txt
-input.txt
+#input.txt
 cmake-build-*
 build
 .idea
