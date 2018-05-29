@@ -6,7 +6,7 @@
 
 
 struct Scanner {
-  explicit Scanner(const std::vector<int>& input) noexcept(false) :
+  explicit Scanner(const std::vector<float>& input) noexcept(false) :
       input(input),
       env(),
       program(env.compile_program("src/scan.cl", std::cerr)),
@@ -14,7 +14,7 @@ struct Scanner {
       propagate(cl::Kernel(program, "scan_hillis_steele_propagate", nullptr)),
       dev_data(env.create_buf_from_vector(input, CL_MEM_READ_WRITE)) {}
 
-  void do_scan(std::vector<int>* output) {
+  void do_scan(std::vector<float>* output) {
     do_scan_rec(1);
     env.copy_buf_to_vector(dev_data, input.size(), output);
   }
@@ -22,7 +22,7 @@ struct Scanner {
  private:
   constexpr static size_t BLOCK_SIZE = 256;
 
-  const std::vector<int>& input;
+  const std::vector<float>& input;
   ClEnvironment env;
   cl::Program program;
   cl::Kernel calculate;
@@ -53,7 +53,7 @@ struct Scanner {
   }
 };
 
-void inclusive_scan(const std::vector<int>& a, std::vector<int>* out) {
+void inclusive_scan(const std::vector<float>& a, std::vector<float>* out) {
   Scanner scanner(a);
   scanner.do_scan(out);
 }
@@ -68,7 +68,7 @@ int main() {
   size_t n;
   ins >> n;
 
-  std::vector<int> a(n), res(n);
+  std::vector<float> a(n), res(n);
   for (auto& x : a) {
     ins >> x;
   }

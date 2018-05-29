@@ -11,8 +11,8 @@ inline size_t get_idx(size_t gid, size_t period) {
   return (gid + 1) * period - 1;
 }
 
-__kernel void scan_hillis_steele_calculate(__global int* data, size_t size, size_t array_period,
-                                           __local int* a, __local int* b) {
+__kernel void scan_hillis_steele_calculate(__global float* data, size_t size, size_t array_period,
+                                           __local float* a, __local float* b) {
   size_t lid = get_local_id(0);
   size_t block_size = get_local_size(0);
 
@@ -22,7 +22,7 @@ __kernel void scan_hillis_steele_calculate(__global int* data, size_t size, size
   a[lid] = b[lid] = data[idx];
   barrier(CLK_LOCAL_MEM_FENCE);
 
-  for (uint s = 1; s < block_size; s <<= 1) {
+  for (size_t s = 1; s < block_size; s <<= 1) {
     if (lid > s - 1) {
       b[lid] = a[lid] + a[lid - s];
     } else {
@@ -30,7 +30,7 @@ __kernel void scan_hillis_steele_calculate(__global int* data, size_t size, size
     }
     barrier(CLK_LOCAL_MEM_FENCE);
 
-    __local int* tmp = a;
+    __local float* tmp = a;
     a = b;
     b = tmp;
   }
@@ -43,7 +43,7 @@ __kernel void scan_hillis_steele_calculate(__global int* data, size_t size, size
   }
 }
 
-__kernel void scan_hillis_steele_propagate(__global int* data, size_t size, size_t array_period) {
+__kernel void scan_hillis_steele_propagate(__global float* data, size_t size, size_t array_period) {
   size_t lid = get_local_id(0);
   size_t block_size = get_local_size(0);
 
@@ -51,7 +51,7 @@ __kernel void scan_hillis_steele_propagate(__global int* data, size_t size, size
   size_t block_id = get_group_id(0);
 
   if (block_id > 0) {
-    __local int to_add;
+    __local float to_add;
     if (lid == 0) {
       // the last element of the previous block
       to_add = data[get_idx(block_id * block_size - 1, array_period)];
