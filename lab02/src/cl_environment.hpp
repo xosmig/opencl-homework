@@ -15,10 +15,10 @@ struct ClEnvironment {
 
   void run_kernel_1d(const cl::Kernel& kernel, size_t global_size, size_t block_size);
 
-  template <typename T>
+  template<typename T>
   cl::Buffer create_buf_from_vector(const std::vector<T>& v, cl_mem_flags flags);
 
-  template <typename T>
+  template<typename T>
   void copy_buf_to_vector(const cl::Buffer& buf, size_t count, std::vector<T>* v);
 
  private:

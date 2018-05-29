@@ -1,4 +1,3 @@
-#include "defer.hpp"
 #include "cl_environment.hpp"
 
 #include <fstream>

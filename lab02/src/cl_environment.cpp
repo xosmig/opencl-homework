@@ -1,9 +1,7 @@
 #include "cl_environment.hpp"
 
-#include "defer.hpp"
 #include <fstream>
-#include <string>
-#include <cassert>
+
 
 ClEnvironment::ClEnvironment() {
   std::vector<cl::Platform> platforms;
@@ -50,7 +48,7 @@ cl::Program ClEnvironment::compile_program(const std::string& file_name, std::os
 }
 
 void ClEnvironment::run_kernel_1d(const cl::Kernel& kernel, size_t global_size, size_t block_size) {
-  auto global_size_rounded =  ((global_size + block_size - 1) / block_size) * block_size;
+  auto global_size_rounded = ((global_size + block_size - 1) / block_size) * block_size;
   queue.enqueueNDRangeKernel(kernel, cl::NullRange,
                              cl::NDRange(global_size_rounded), cl::NDRange(block_size));
 }
